@@ -1,6 +1,6 @@
 package backend.controller;
 
-import backend.model.User;
+import backend.dbModel.User;
 import backend.service.UserService;
 
 import backend.exception.ResourceNotFoundException;

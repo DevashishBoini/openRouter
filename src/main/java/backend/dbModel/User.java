@@ -1,4 +1,4 @@
-package backend.model;
+package backend.dbModel;
 import java.util.UUID;
 
 import jakarta.persistence.*;
@@ -19,11 +19,14 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private float credits = 0;
+
 
 
     // Constructors
 
-    public User() {
+    protected User() {
     }
 
     public User(String email, String password) {
@@ -47,7 +50,9 @@ public class User {
         return password;
     }
 
-
+    public float getCredits() {
+        return credits;
+    }
 
     // Setters
 
@@ -60,5 +65,7 @@ public class User {
         this.password = password;
     }
 
-    
+    public void setCredits(int credits) {
+        this.credits = credits;
+    }
 }

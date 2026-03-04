@@ -1,6 +1,6 @@
 package backend.service;
 
-import backend.model.User;
+import backend.dbModel.User;
 import backend.repository.UserRepository;
 
 import backend.exception.EmailAlreadyExistsException;

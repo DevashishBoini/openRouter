@@ -2,7 +2,7 @@ package backend.mapper;
 
 import backend.dto.CreateUserRequest;
 import backend.dto.UserResponse;
-import backend.model.User;
+import backend.dbModel.User;
 
 import org.mapstruct.Mapper;
 
