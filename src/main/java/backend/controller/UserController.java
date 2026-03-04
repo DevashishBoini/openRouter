@@ -116,23 +116,23 @@ public class UserController {
 
 
 
-    /**
-     * Create a new user.
-     *
-     * <p>The incoming {@link CreateUserRequest} DTO is mapped to a {@link User}
-     * entity using {@link UserMapper}. The entity is then persisted by the
-     * service layer and mapped back to a {@link UserResponse} DTO.</p>
-     *
-     * @param request request body containing user creation details
-     * @return ResponseEntity containing the created {@link UserResponse} and HTTP status 201 (CREATED)
-     * @throws EmailAlreadyExistsException if a user with the given email already exists
-     */
-    @PostMapping
-    public ResponseEntity<UserResponse> createUser(@RequestBody CreateUserRequest request) {
-
-        User user = userMapper.toUser(request);
-        User createdUser = userService.createUser(user);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(userMapper.toUserResponse(createdUser));
-    }
+//    /**
+//     * Create a new user.
+//     *
+//     * <p>The incoming {@link CreateUserRequest} DTO is mapped to a {@link User}
+//     * entity using {@link UserMapper}. The entity is then persisted by the
+//     * service layer and mapped back to a {@link UserResponse} DTO.</p>
+//     *
+//     * @param request request body containing user creation details
+//     * @return ResponseEntity containing the created {@link UserResponse} and HTTP status 201 (CREATED)
+//     * @throws EmailAlreadyExistsException if a user with the given email already exists
+//     */
+//    @PostMapping
+//    public ResponseEntity<UserResponse> createUser(@RequestBody CreateUserRequest request) {
+//
+//        User user = userMapper.toUser(request);
+//        User createdUser = userService.createUser(user);
+//
+//        return ResponseEntity.status(HttpStatus.CREATED).body(userMapper.toUserResponse(createdUser));
+//    }
 }
