@@ -1,9 +1,8 @@
-package backend.dto;
+package backend.dto.Responses;
 
 import java.util.UUID;
 
 public record SignupResponse(
         UUID id,
-        String name,
         String email
 ) {}

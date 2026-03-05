@@ -1,9 +1,8 @@
 package backend.mapper;
 
-import backend.dto.SignupRequest;
-import backend.dto.SignupResponse;
-import backend.dto.LoginRequest;
-import backend.dto.LoginResponse;
+import backend.dto.Requests.SignupRequest;
+import backend.dto.Responses.SignupResponse;
+import backend.dto.Responses.LoginResponse;
 import backend.dbModel.User;
 
 import org.mapstruct.Mapper;

@@ -1,7 +1,7 @@
 package backend.controller;
 
 import backend.dbModel.User;
-import backend.dto.SignupResponse;
+import backend.dto.Responses.SignupResponse;
 import backend.service.UserService;
 
 import backend.exception.ResourceNotFoundException;

@@ -1,8 +1,6 @@
 package backend.service;
 
 import backend.dbModel.User;
-import backend.dto.SignupRequest;
-import backend.dto.LoginRequest;
 import backend.exception.InvalidCredentialsException;
 import backend.repository.UserRepository;
 
@@ -11,6 +9,8 @@ import backend.exception.ResourceNotFoundException;
 
 import backend.utils.PasswordHandler;
 import backend.utils.JwtHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +19,8 @@ import java.util.UUID;
 
 @Service
 public class UserService {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     private final UserRepository userRepository;
     private final PasswordHandler passwordHandler;
@@ -51,29 +53,40 @@ public class UserService {
 
     public User createUser(String email, String password) {
 
+        logger.info("Attempting user signup: email={}", email);
+
         String hashedPassword = passwordHandler.hashPassword(password);
         User user = new User(email, hashedPassword);
 
         try {
-            return userRepository.save(user);
+            User savedUser = userRepository.save(user);
+            logger.info("User signup successful: userId={}, email={}", savedUser.getId(), savedUser.getEmail());
+            return savedUser;
         } catch (DataIntegrityViolationException e) {
+            logger.warn("User signup failed - email already exists: email={}", email);
             throw new EmailAlreadyExistsException("Email already exists", e);
         }
     }
     
     public String userLogin(String email, String password){
+        logger.info("Attempting user login: email={}", email);
+
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() ->
-                        new InvalidCredentialsException("Invalid Email or Password")
-                );
+                .orElseThrow(() -> {
+                    logger.warn("Login failed - user not found: email={}", email);
+                    return new InvalidCredentialsException("Invalid Email or Password");
+                });
 
 
         if(!passwordHandler.verifyPassword(password, user.getPassword())){
+            logger.warn("Login failed - invalid password: email={}", email);
             throw new InvalidCredentialsException("Invalid Email or Password");
         }
 
-        return jwtHandler.generateJwtToken(user.getEmail());
+        String token = jwtHandler.generateJwtToken(user.getEmail());
+        logger.info("User login successful: userId={}, email={}", user.getId(), user.getEmail());
 
+        return token;
     }
 
 }
