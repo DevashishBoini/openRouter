@@ -2,6 +2,7 @@ package backend.controller;
 
 import backend.annotation.SuccessMessage;
 import backend.dbModel.User;
+import backend.mapper.DtoMapper;
 import backend.service.UserService;
 
 import backend.exception.EmailAlreadyExistsException;
@@ -11,13 +12,11 @@ import backend.dto.Requests.SignupRequest;
 import backend.dto.Responses.SignupResponse;
 import backend.dto.Requests.LoginRequest;
 import backend.dto.Responses.LoginResponse;
-import backend.mapper.UserMapper;
 
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -26,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
  *
  * <p>This controller exposes endpoints for retrieving users and creating new users.</p>
  *
- * <p>Request DTOs are converted into domain entities using {@link UserMapper},
+ * <p>Request DTOs are converted into domain entities using {@link DtoMapper},
  * and entities returned from the service layer are mapped into response DTOs
  * before being returned to the client.</p>
  *
@@ -38,24 +37,24 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/auth/v1")
+@RequestMapping("/v1/auth")
 public class AuthController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     private final UserService userService;
-    private final UserMapper userMapper;
+    private final DtoMapper dtoMapper;
 
 
     /**
      * Constructs a {@code AuthController} with the required dependencies.
      *
      * @param userService service layer responsible for user-related business logic
-     * @param userMapper mapper used to convert between entities and DTOs
+     * @param dtoMapper mapper used to convert between entities and DTOs
      */
-    public AuthController(UserService userService, UserMapper userMapper) {
+    public AuthController(UserService userService, DtoMapper dtoMapper) {
         this.userService = userService;
-        this.userMapper = userMapper;
+        this.dtoMapper = dtoMapper;
     }
 
 
@@ -72,13 +71,13 @@ public class AuthController {
     @SuccessMessage("User created successfully")
     public SignupResponse createUser(@Valid @RequestBody SignupRequest request) {
 
-        logger.info("POST /api/v1/users/signup - Request received: email={}", request.email());
+        logger.info("createUser - Request received: email={}", request.email());
 
         User createdUser = userService.createUser(request.email(), request.password());
 
-        logger.info("POST /api/v1/users/signup - Response sent: userId={}, status=201", createdUser.getId());
+        logger.info("createUser - Response sent: userId={}", createdUser.getId());
 
-        return userMapper.toUserResponse(createdUser);
+        return dtoMapper.toUserResponse(createdUser);
     }
 
 
@@ -94,12 +93,12 @@ public class AuthController {
     @SuccessMessage("Login successful")
     public LoginResponse login(@Valid @RequestBody LoginRequest request) {
 
-        logger.info("POST /api/v1/users/login - Request received: email={}", request.email());
+        logger.info("login- Request received: email={}", request.email());
 
         String token = userService.userLogin(request.email(), request.password());
 
-        logger.info("POST /api/v1/users/login - Response sent: email={}, status=200", request.email());
+        logger.info("login - Response sent: email={}", request.email());
 
-        return userMapper.toLoginResponse(token);
+        return dtoMapper.toLoginResponse(token);
     }
 }

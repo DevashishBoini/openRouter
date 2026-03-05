@@ -12,7 +12,7 @@ import java.util.List;
 
 @Component
 @Mapper(componentModel = "spring")
-public interface UserMapper {
+public interface DtoMapper {
 
     User toUser(SignupRequest request);
     SignupResponse toUserResponse(User user);

@@ -48,10 +48,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
 
                         // Public routes
-                        .requestMatchers("/auth/v1/**").permitAll()
+                        .requestMatchers("/v1/auth/**").permitAll()
 
                         // Protected routes
-                        .requestMatchers("/api/**").authenticated()
+                        .requestMatchers("/api/v1/**").authenticated()
 
                         // Everything else
                         .anyRequest().permitAll()

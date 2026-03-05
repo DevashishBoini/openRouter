@@ -66,8 +66,8 @@ public class RequestTracingFilter implements Filter {
                     httpResponse.getStatus(),
                     duration);
 
-            // Clear MDC to prevent memory leaks
-            MDC.clear();
+            // Remove MDC to prevent memory leaks
+            MDC.remove(CORRELATION_ID_KEY);
         }
     }
 

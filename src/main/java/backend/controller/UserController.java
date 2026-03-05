@@ -2,11 +2,10 @@ package backend.controller;
 
 import backend.dbModel.User;
 import backend.dto.Responses.SignupResponse;
+import backend.mapper.DtoMapper;
 import backend.service.UserService;
 
 import backend.exception.ResourceNotFoundException;
-
-import backend.mapper.UserMapper;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +22,7 @@ import java.util.UUID;
  *
  * <p>This controller exposes endpoints for retrieving users and creating new users.</p>
  *
- * <p>Request DTOs are converted into domain entities using {@link UserMapper},
+ * <p>Request DTOs are converted into domain entities using {@link DtoMapper},
  * and entities returned from the service layer are mapped into response DTOs
  * before being returned to the client.</p>
  *
@@ -38,18 +37,18 @@ public class UserController {
 
 
     private final UserService userService;
-    private final UserMapper userMapper;
+    private final DtoMapper dtoMapper;
 
 
     /**
      * Constructs a {@code UserController} with the required dependencies.
      *
      * @param userService service layer responsible for user-related business logic
-     * @param userMapper mapper used to convert between entities and DTOs
+     * @param dtoMapper mapper used to convert between entities and DTOs
      */
-    public UserController(UserService userService, UserMapper userMapper) {
+    public UserController(UserService userService, DtoMapper dtoMapper) {
         this.userService = userService;
-        this.userMapper = userMapper;
+        this.dtoMapper = dtoMapper;
     }
 
 
@@ -67,7 +66,7 @@ public class UserController {
 
         List<User> users = userService.getAllUsers();
 
-        return ResponseEntity.ok(userMapper.toUserResponses(users));
+        return ResponseEntity.ok(dtoMapper.toUserResponses(users));
     }
 
 
@@ -87,7 +86,7 @@ public class UserController {
 
         User user = userService.getUserById(id);
 
-        return ResponseEntity.ok(userMapper.toUserResponse(user));
+        return ResponseEntity.ok(dtoMapper.toUserResponse(user));
     }
 
 
@@ -108,7 +107,7 @@ public class UserController {
 
         User user = userService.getUserByEmail(email);
 
-        return ResponseEntity.ok(userMapper.toUserResponse(user));
+        return ResponseEntity.ok(dtoMapper.toUserResponse(user));
     }
 
 
@@ -117,7 +116,7 @@ public class UserController {
 //     * Create a new user.
 //     *
 //     * <p>The incoming {@link SignupRequest} DTO is mapped to a {@link User}
-//     * entity using {@link UserMapper}. The entity is then persisted by the
+//     * entity using {@link DtoMapper}. The entity is then persisted by the
 //     * service layer and mapped back to a {@link SignupResponse} DTO.</p>
 //     *
 //     * @param request request body containing user creation details
@@ -127,9 +126,9 @@ public class UserController {
 //    @PostMapping
 //    public ResponseEntity<SignupResponse> createUser(@RequestBody SignupRequest request) {
 //
-//        User user = userMapper.toUser(request);
+//        User user = dtoMapper.toUser(request);
 //        User createdUser = userService.createUser(user);
 //
-//        return ResponseEntity.status(HttpStatus.CREATED).body(userMapper.toUserResponse(createdUser));
+//        return ResponseEntity.status(HttpStatus.CREATED).body(dtoMapper.toUserResponse(createdUser));
 //    }
 }
