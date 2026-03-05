@@ -11,6 +11,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -129,6 +130,20 @@ public class GlobalExceptionHandler {
                 false,
                 "An unexpected error occurred. Please try again later.",
                 null
+        );
+    }
+
+
+    @ExceptionHandler(NoHandlerFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleNoHandlerFound(NoHandlerFoundException ex) {
+
+        logger.warn("Unknown route requested: {}", ex.getRequestURL());
+
+        return new ErrorResponse(
+                false,
+                "API endpoint not found",
+                ex.getRequestURL()
         );
     }
 }

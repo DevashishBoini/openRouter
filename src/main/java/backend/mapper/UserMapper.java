@@ -6,9 +6,11 @@ import backend.dto.Responses.LoginResponse;
 import backend.dbModel.User;
 
 import org.mapstruct.Mapper;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 

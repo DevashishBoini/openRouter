@@ -42,4 +42,29 @@ public class JwtHandler {
                 .signWith(secretKey)
                 .compact();
     }
+
+    public boolean validateJwtToken(String token) {
+
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token);
+
+            return true;
+
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public String extractEmail(String token) {
+
+        return Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+    }
 }
