@@ -1,13 +1,16 @@
 package backend.service;
 
 import backend.dbModel.User;
-import backend.dto.CreateUserRequest;
+import backend.dto.SignupRequest;
+import backend.dto.LoginRequest;
+import backend.exception.InvalidCredentialsException;
 import backend.repository.UserRepository;
 
 import backend.exception.EmailAlreadyExistsException;
 import backend.exception.ResourceNotFoundException;
 
-import backend.utils.EncryptionHandler;
+import backend.utils.PasswordHandler;
+import backend.utils.JwtHandler;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -18,12 +21,14 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final EncryptionHandler encryptionHandler;
+    private final PasswordHandler passwordHandler;
+    private final JwtHandler jwtHandler;
 
-    public UserService(UserRepository userRepository, EncryptionHandler encryptionHandler) {
+    public UserService(UserRepository userRepository, PasswordHandler passwordHandler, JwtHandler jwtHandler) {
 
         this.userRepository = userRepository;
-        this.encryptionHandler = encryptionHandler;
+        this.passwordHandler = passwordHandler;
+        this.jwtHandler = jwtHandler;
     }
 
     public List<User> getAllUsers() {
@@ -44,16 +49,31 @@ public class UserService {
                 );
     }
 
-    public User createUser(CreateUserRequest request) {
+    public User createUser(String email, String password) {
 
-        String hashedPassword = encryptionHandler.hashPassword(request.password());
-        User user = new User(request.email(), hashedPassword);
+        String hashedPassword = passwordHandler.hashPassword(password);
+        User user = new User(email, hashedPassword);
 
         try {
             return userRepository.save(user);
         } catch (DataIntegrityViolationException e) {
             throw new EmailAlreadyExistsException("Email already exists", e);
         }
+    }
+    
+    public String userLogin(String email, String password){
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new InvalidCredentialsException("Invalid Email or Password")
+                );
+
+
+        if(!passwordHandler.verifyPassword(password, user.getPassword())){
+            throw new InvalidCredentialsException("Invalid Email or Password");
+        }
+
+        return jwtHandler.generateJwtToken(user.getEmail());
+
     }
 
 }

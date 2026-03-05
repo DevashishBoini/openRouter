@@ -4,9 +4,12 @@ import backend.dbModel.User;
 import backend.service.UserService;
 
 import backend.exception.EmailAlreadyExistsException;
+import backend.exception.InvalidCredentialsException;
 
-import backend.dto.CreateUserRequest;
-import backend.dto.UserResponse;
+import backend.dto.SignupRequest;
+import backend.dto.SignupResponse;
+import backend.dto.LoginRequest;
+import backend.dto.LoginResponse;
 import backend.mapper.UserMapper;
 
 import jakarta.validation.Valid;
@@ -57,17 +60,35 @@ public class AuthController {
      * Create a new user.
      *
      *
-     * @param request request body containing user creation details in {@link CreateUserRequest} format
-     * @return ResponseEntity containing the created {@link UserResponse} with HTTP status {@code 201 CREATED}
+     * @param request request body containing user creation details in {@link SignupRequest} format
+     * @return ResponseEntity containing the created {@link SignupResponse} with HTTP status {@code 201 CREATED}
      * @throws EmailAlreadyExistsException if a user with the given email already exists
      */
     @PostMapping("/signup")
-    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody CreateUserRequest request) {
+    public ResponseEntity<SignupResponse> createUser(@Valid @RequestBody SignupRequest request) {
 
 //        User user = userMapper.toUser(request);
-        User createdUser = userService.createUser(request);
+        User createdUser = userService.createUser(request.email(), request.password());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(userMapper.toUserResponse(createdUser));
+    }
+
+
+    /**
+     * Authenticate a user and generate a JWT token.
+     *
+     *
+     * @param request request body containing user login credentials in {@link LoginRequest} format
+     * @return ResponseEntity containing the generated {@link LoginResponse} with HTTP status {@code 200 OK}
+     * @throws InvalidCredentialsException if the provided email or password is incorrect
+     */
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+
+        String token = userService.userLogin(request.email(), request.password());
+
+        return ResponseEntity.status(HttpStatus.OK).body(userMapper.toLoginResponse(token));
+
     }
 
 }

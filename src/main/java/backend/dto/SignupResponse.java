@@ -2,7 +2,7 @@ package backend.dto;
 
 import java.util.UUID;
 
-public record UserResponse(
+public record SignupResponse(
         UUID id,
         String name,
         String email

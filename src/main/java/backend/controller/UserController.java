@@ -1,16 +1,13 @@
 package backend.controller;
 
 import backend.dbModel.User;
+import backend.dto.SignupResponse;
 import backend.service.UserService;
 
 import backend.exception.ResourceNotFoundException;
-import backend.exception.EmailAlreadyExistsException;
 
-import backend.dto.CreateUserRequest;
-import backend.dto.UserResponse;
 import backend.mapper.UserMapper;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,12 +58,12 @@ public class UserController {
      * Retrieve all users in the system.
      *
      * <p>The service layer returns a list of {@link User} entities which are mapped
-     * to {@link UserResponse} DTOs before being returned in the HTTP response.</p>
+     * to {@link SignupResponse} DTOs before being returned in the HTTP response.</p>
      *
-     * @return ResponseEntity containing a list of {@link UserResponse} and HTTP status 200 (OK)
+     * @return ResponseEntity containing a list of {@link SignupResponse} and HTTP status 200 (OK)
      */
     @GetMapping
-    public ResponseEntity<List<UserResponse>> getAllUsers() {
+    public ResponseEntity<List<SignupResponse>> getAllUsers() {
 
         List<User> users = userService.getAllUsers();
 
@@ -79,14 +76,14 @@ public class UserController {
      * Retrieve a user by their unique identifier.
      *
      * <p>The service layer retrieves the corresponding {@link User} entity,
-     * which is then mapped to a {@link UserResponse} DTO.</p>
+     * which is then mapped to a {@link SignupResponse} DTO.</p>
      *
      * @param id UUID of the user to retrieve
-     * @return ResponseEntity containing the {@link UserResponse} and HTTP status 200 (OK)
+     * @return ResponseEntity containing the {@link SignupResponse} and HTTP status 200 (OK)
      * @throws ResourceNotFoundException if no user exists with the given id
      */
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> getUserById(@PathVariable UUID id) {
+    public ResponseEntity<SignupResponse> getUserById(@PathVariable UUID id) {
 
         User user = userService.getUserById(id);
 
@@ -100,14 +97,14 @@ public class UserController {
      *
      * <p>The service layer retrieves the corresponding {@link User} entity
      * using the provided email address. The entity is then mapped to a
-     * {@link UserResponse} DTO before being returned to the client.</p>
+     * {@link SignupResponse} DTO before being returned to the client.</p>
      *
      * @param email email address used to identify the user
-     * @return ResponseEntity containing the {@link UserResponse} and HTTP status 200 (OK)
+     * @return ResponseEntity containing the {@link SignupResponse} and HTTP status 200 (OK)
      * @throws ResourceNotFoundException if no user exists with the given email
      */
     @GetMapping("/by-email/{email}")
-    public ResponseEntity<UserResponse> getUserByEmail(@PathVariable String email) {
+    public ResponseEntity<SignupResponse> getUserByEmail(@PathVariable String email) {
 
         User user = userService.getUserByEmail(email);
 
@@ -119,16 +116,16 @@ public class UserController {
 //    /**
 //     * Create a new user.
 //     *
-//     * <p>The incoming {@link CreateUserRequest} DTO is mapped to a {@link User}
+//     * <p>The incoming {@link SignupRequest} DTO is mapped to a {@link User}
 //     * entity using {@link UserMapper}. The entity is then persisted by the
-//     * service layer and mapped back to a {@link UserResponse} DTO.</p>
+//     * service layer and mapped back to a {@link SignupResponse} DTO.</p>
 //     *
 //     * @param request request body containing user creation details
-//     * @return ResponseEntity containing the created {@link UserResponse} and HTTP status 201 (CREATED)
+//     * @return ResponseEntity containing the created {@link SignupResponse} and HTTP status 201 (CREATED)
 //     * @throws EmailAlreadyExistsException if a user with the given email already exists
 //     */
 //    @PostMapping
-//    public ResponseEntity<UserResponse> createUser(@RequestBody CreateUserRequest request) {
+//    public ResponseEntity<SignupResponse> createUser(@RequestBody SignupRequest request) {
 //
 //        User user = userMapper.toUser(request);
 //        User createdUser = userService.createUser(user);
