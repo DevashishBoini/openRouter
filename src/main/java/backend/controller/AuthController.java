@@ -14,8 +14,8 @@ import backend.dto.Requests.LoginRequest;
 import backend.dto.Responses.LoginResponse;
 
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,24 +38,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/auth")
+@RequiredArgsConstructor
+@Slf4j
 public class AuthController {
-
-    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     private final UserService userService;
     private final DtoMapper dtoMapper;
-
-
-    /**
-     * Constructs a {@code AuthController} with the required dependencies.
-     *
-     * @param userService service layer responsible for user-related business logic
-     * @param dtoMapper mapper used to convert between entities and DTOs
-     */
-    public AuthController(UserService userService, DtoMapper dtoMapper) {
-        this.userService = userService;
-        this.dtoMapper = dtoMapper;
-    }
 
 
 
@@ -71,11 +59,11 @@ public class AuthController {
     @SuccessMessage("User created successfully")
     public SignupResponse createUser(@Valid @RequestBody SignupRequest request) {
 
-        logger.info("createUser - Request received: email={}", request.email());
+        log.info("createUser - Request received: email={}", request.email());
 
         User createdUser = userService.createUser(request.email(), request.password());
 
-        logger.info("createUser - Response sent: userId={}", createdUser.getId());
+        log.info("createUser - Response sent: userId={}", createdUser.getId());
 
         return dtoMapper.toUserResponse(createdUser);
     }
@@ -93,11 +81,11 @@ public class AuthController {
     @SuccessMessage("Login successful")
     public LoginResponse login(@Valid @RequestBody LoginRequest request) {
 
-        logger.info("login- Request received: email={}", request.email());
+        log.info("login- Request received: email={}", request.email());
 
         String token = userService.userLogin(request.email(), request.password());
 
-        logger.info("login - Response sent: email={}", request.email());
+        log.info("login - Response sent: email={}", request.email());
 
         return dtoMapper.toLoginResponse(token);
     }

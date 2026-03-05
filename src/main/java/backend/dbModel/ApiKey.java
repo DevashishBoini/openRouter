@@ -1,124 +1,57 @@
 package backend.dbModel;
-import java.util.UUID;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
+import lombok.*;
+
 import java.time.LocalDateTime;
+import java.util.UUID;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Table(name = "apikeys")
-public class ApiKey {
 
-    // Attributes
+@Getter
+@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
+public class ApiKey {
 
     @Id
     @GeneratedValue
+    @Setter(AccessLevel.NONE)
     private UUID id;
 
     @Column(nullable = false)
     private String name;
 
-    @Column(name="api_key_value", unique=true, nullable=false)
+    @Column(name = "api_key_hash", nullable = false)
     private String apiKeyValue;
 
+    @PositiveOrZero
     @Column(nullable = false)
-    @Positive
-    private float creditsConsumed = 0;
+    @Builder.Default
+    private double creditsConsumed = 0;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
+    @Builder.Default
     private boolean disabled = false;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
+    @Builder.Default
     private boolean deleted = false;
 
-    @Column(name="last_used", nullable=true)
+    @Column(name = "last_used")
     private LocalDateTime lastUsed;
 
-
-    // Foreign Keys and Relationships
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
+    @Setter(AccessLevel.NONE)
+    private LocalDateTime createdAt;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
-
-
-
-    // Constructors
-
-    protected ApiKey(){
-
-    }
-
-
-    public ApiKey(String name, String apiKeyValue, User user){
-        this.name = name;
-        this.apiKeyValue = apiKeyValue;
-        this.user = user;
-    }
-
-
-
-    // Getters
-
-    public UUID getId(){
-        return id;
-    }
-
-    public String getName(){
-        return name;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public String getApiKeyValue() {
-        return apiKeyValue;
-    }
-
-    public float getCreditsConsumed() {
-        return creditsConsumed;
-    }
-
-    public boolean isDeleted() {
-        return deleted;
-    }
-
-    public boolean isDisabled() {
-        return disabled;
-    }
-
-    public LocalDateTime getLastUsed() {
-        return lastUsed;
-    }
-
-    // Setters
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public void setApiKeyValue(String apiKeyValue) {
-        this.apiKeyValue = apiKeyValue;
-    }
-
-    public void setCreditsConsumed(float creditsConsumed) {
-        this.creditsConsumed = creditsConsumed;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
-    }
-
-    public void setDisabled(boolean disabled) {
-        this.disabled = disabled;
-    }
-
-    public void setLastUsed(LocalDateTime lastUsed) {
-        this.lastUsed = lastUsed;
-    }
 }

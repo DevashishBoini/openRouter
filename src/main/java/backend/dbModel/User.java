@@ -1,71 +1,34 @@
 package backend.dbModel;
-import java.util.UUID;
 
 import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
+
+@Getter
+@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class User {
 
     // Attributes
 
-    @Id // Primary Key
+    @Id
     @GeneratedValue
+    @Setter(AccessLevel.NONE)
     private UUID id;
 
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(nullable = false)
-    private String password;
+    @Column(name = "password_hash", nullable = false)
+    private String passwordHash;
 
     @Column(nullable = false)
-    private float credits = 0;
-
-
-
-    // Constructors
-
-    protected User() {
-    }
-
-    public User(String email, String password) {
-        this.email = email;
-        this.password = password;
-    }
-
-
-
-    // Getters
-
-    public UUID getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public float getCredits() {
-        return credits;
-    }
-
-    // Setters
-
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setCredits(int credits) {
-        this.credits = credits;
-    }
+    @Builder.Default
+    private double credits = 0;
 }

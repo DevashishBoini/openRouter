@@ -1,96 +1,44 @@
 package backend.dbModel;
-import java.util.UUID;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
+import lombok.*;
+
+import java.util.UUID;
 
 @Entity
-@Table(name="model_provider_mappings")
+@Table(name = "model_provider_mappings")
+
+@Getter
+@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class ModelProviderMapping {
 
     // Attributes
 
     @Id
     @GeneratedValue
+    @Setter(AccessLevel.NONE)
     private UUID id;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     @Positive
-    private float inputTokenCost;
+    private double inputTokenCost;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     @Positive
-    private float outputTokenCost;
+    private double outputTokenCost;
 
 
     // Foreign Keys and Relationships
 
-    @ManyToOne(optional=false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "model_id", referencedColumnName = "id", nullable = false)
     private Model model;
 
-    @ManyToOne(optional=false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "provider_id", referencedColumnName = "id", nullable = false)
     private Provider provider;
-
-
-    // Constructors
-
-    protected ModelProviderMapping(){
-
-    }
-
-    public ModelProviderMapping(float inputTokenCost, float outputTokenCost, Model model, Provider provider){
-
-        this.inputTokenCost = inputTokenCost;
-        this.outputTokenCost = outputTokenCost;
-        this.model = model;
-        this.provider = provider;
-    }
-
-
-
-    // Getters
-
-
-    public UUID getId() {
-        return id;
-    }
-
-    public float getInputTokenCost() {
-        return inputTokenCost;
-    }
-
-    public float getOutputTokenCost() {
-        return outputTokenCost;
-    }
-
-    public Model getModel() {
-        return model;
-    }
-
-    public Provider getProvider() {
-        return provider;
-    }
-
-
-
-    // Setters
-
-
-    public void setInputTokenCost(float inputTokenCost) {
-        this.inputTokenCost = inputTokenCost;
-    }
-
-    public void setOutputTokenCost(float outputTokenCost) {
-        this.outputTokenCost = outputTokenCost;
-    }
-
-    public void setModel(Model model) {
-        this.model = model;
-    }
-
-    public void setProvider(Provider provider) {
-        this.provider = provider;
-    }
 }

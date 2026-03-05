@@ -9,8 +9,8 @@ import backend.exception.ResourceNotFoundException;
 
 import backend.utils.PasswordHandler;
 import backend.utils.JwtHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -18,20 +18,13 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class UserService {
-
-    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     private final UserRepository userRepository;
     private final PasswordHandler passwordHandler;
     private final JwtHandler jwtHandler;
-
-    public UserService(UserRepository userRepository, PasswordHandler passwordHandler, JwtHandler jwtHandler) {
-
-        this.userRepository = userRepository;
-        this.passwordHandler = passwordHandler;
-        this.jwtHandler = jwtHandler;
-    }
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -40,7 +33,7 @@ public class UserService {
     public User getUserById(UUID id) {
         return userRepository.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found with id: " + id)
+                        new ResourceNotFoundException("User not found")
                 );
     }
 
@@ -53,7 +46,7 @@ public class UserService {
 
     public User createUser(String email, String password) {
 
-        logger.info("Attempting user signup: email={}", email);
+        log.info("Attempting user signup: email={}", email);
 
         String hashedPassword = passwordHandler.hashPassword(password);
         User user = User.builder()
@@ -63,26 +56,26 @@ public class UserService {
 
         try {
             User savedUser = userRepository.save(user);
-            logger.info("User signup successful: userId={}, email={}", savedUser.getId(), savedUser.getEmail());
+            log.info("User signup successful: userId={}, email={}", savedUser.getId(), savedUser.getEmail());
             return savedUser;
         } catch (DataIntegrityViolationException e) {
-            logger.warn("User signup failed - email already exists: email={}", email);
+            log.warn("User signup failed - email already exists: email={}", email);
             throw new EmailAlreadyExistsException("Email already exists", e);
         }
     }
     
     public String userLogin(String email, String password){
-        logger.info("Attempting user login: email={}", email);
+        log.info("Attempting user login: email={}", email);
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> {
-                    logger.warn("Login failed - user not found: email={}", email);
+                    log.warn("Login failed - user not found: email={}", email);
                     return new InvalidCredentialsException("Invalid Email or Password");
                 });
 
 
         if(!passwordHandler.verifyPassword(password, user.getPasswordHash())){
-            logger.warn("Login failed - invalid password: email={}", email);
+            log.warn("Login failed - invalid password: email={}", email);
             throw new InvalidCredentialsException("Invalid Email or Password");
         }
 
@@ -90,7 +83,7 @@ public class UserService {
                 user.getId(),
                 user.getEmail()
         );
-        logger.info("User login successful: userId={}, email={}", user.getId(), user.getEmail());
+        log.info("User login successful: userId={}, email={}", user.getId(), user.getEmail());
 
         return token;
     }
