@@ -1,14 +1,8 @@
 package backend.security;
 
-public class UserPrincipal {
+import java.util.UUID;
 
-    private final String email;
-
-    public UserPrincipal(String email) {
-        this.email = email;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-}
+public record UserPrincipal(
+        UUID userId,
+        String email
+) {}

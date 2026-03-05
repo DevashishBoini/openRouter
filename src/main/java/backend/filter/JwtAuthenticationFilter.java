@@ -1,8 +1,8 @@
 package backend.filter;
 
-import backend.exception.InvalidCredentialsException;
 import backend.security.UserPrincipal;
 import backend.utils.JwtHandler;
+import java.util.UUID;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -61,11 +61,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
 
+            UUID userId = jwtHandler.extractUserId(token);
             String email = jwtHandler.extractEmail(token);
 
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
 
-                UserPrincipal userPrincipal = new UserPrincipal(email);
+                UserPrincipal userPrincipal = new UserPrincipal(userId, email);
 
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(userPrincipal, null, null);

@@ -56,7 +56,10 @@ public class UserService {
         logger.info("Attempting user signup: email={}", email);
 
         String hashedPassword = passwordHandler.hashPassword(password);
-        User user = new User(email, hashedPassword);
+        User user = User.builder()
+                .email(email)
+                .passwordHash(hashedPassword)
+                .build();
 
         try {
             User savedUser = userRepository.save(user);
@@ -78,12 +81,15 @@ public class UserService {
                 });
 
 
-        if(!passwordHandler.verifyPassword(password, user.getPassword())){
+        if(!passwordHandler.verifyPassword(password, user.getPasswordHash())){
             logger.warn("Login failed - invalid password: email={}", email);
             throw new InvalidCredentialsException("Invalid Email or Password");
         }
 
-        String token = jwtHandler.generateJwtToken(user.getEmail());
+        String token = jwtHandler.generateJwtToken(
+                user.getId(),
+                user.getEmail()
+        );
         logger.info("User login successful: userId={}, email={}", user.getId(), user.getEmail());
 
         return token;

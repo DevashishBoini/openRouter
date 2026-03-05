@@ -1,12 +1,13 @@
 package backend.utils;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 
@@ -33,38 +34,42 @@ public class JwtHandler {
         this.expirationTime = expirationTime;
     }
 
-    public String generateJwtToken(String email){
+    public String generateJwtToken(UUID userId, String email){
 
         return Jwts.builder()
-                .setSubject(email)
+                .setSubject(userId.toString())
+                .claim("email", email)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(secretKey)
                 .compact();
     }
 
-    public boolean validateJwtToken(String token) {
-
-        try {
-            Jwts.parserBuilder()
-                    .setSigningKey(secretKey)
-                    .build()
-                    .parseClaimsJws(token);
-
-            return true;
-
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public String extractEmail(String token) {
+    private Claims parseClaims(String token) {
 
         return Jwts.parserBuilder()
                 .setSigningKey(secretKey)
                 .build()
                 .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+                .getBody();
+    }
+
+
+    public boolean validateJwtToken(String token) {
+
+        try {
+            parseClaims(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public UUID extractUserId(String token) {
+        return UUID.fromString(parseClaims(token).getSubject());
+    }
+
+    public String extractEmail(String token) {
+        return parseClaims(token).get("email", String.class);
     }
 }
