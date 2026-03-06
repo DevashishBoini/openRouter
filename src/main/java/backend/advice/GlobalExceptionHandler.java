@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.NoHandlerFoundException;
@@ -144,6 +145,22 @@ public class GlobalExceptionHandler {
                 false,
                 "API endpoint not found",
                 ex.getRequestURL()
+        );
+    }
+
+    /**
+     * Invalid JSON or illegal datatype
+     */
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleInvalidRequestBody(HttpMessageNotReadableException ex) {
+
+        logger.warn("Invalid request body: {}", ex.getMessage());
+
+        return new ErrorResponse(
+                false,
+                "Invalid request body or datatype",
+                null
         );
     }
 }
