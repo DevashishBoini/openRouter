@@ -9,6 +9,7 @@ import backend.exception.ResourceNotFoundException;
 
 import backend.utils.PasswordHandler;
 import backend.utils.JwtHandler;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -44,6 +45,7 @@ public class UserService {
                 );
     }
 
+    @Transactional
     public User createUser(String email, String password) {
 
         log.info("Attempting user signup: email={}", email);
