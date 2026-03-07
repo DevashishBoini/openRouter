@@ -2,6 +2,7 @@ package backend.mapper;
 
 import backend.dto.Requests.SignupRequest;
 import backend.dto.Responses.LoginResponse;
+import backend.dto.Responses.ProfileResponse;
 import backend.dto.Responses.SignupResponse;
 import backend.dbModel.User;
 import org.springframework.stereotype.Component;
@@ -34,5 +35,13 @@ public class DtoMapper {
 
     public LoginResponse toLoginResponse(String token) {
         return new LoginResponse(token);
+    }
+
+    public ProfileResponse toProfileResponse(User user) {
+        return new ProfileResponse(
+                user.getId(),
+                user.getEmail(),
+                user.getCredits()
+        );
     }
 }
