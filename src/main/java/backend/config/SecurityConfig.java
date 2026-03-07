@@ -49,6 +49,9 @@ public class SecurityConfig {
 
                         // Public routes
                         .requestMatchers("/v1/auth/**").permitAll()
+                        .requestMatchers("/api/v1/models").permitAll()
+                        .requestMatchers("/api/v1/models/*/providers").permitAll()
+                        .requestMatchers("/api/v1/providers").permitAll()
 
                         // Protected routes
                         .requestMatchers("/api/v1/**").authenticated()

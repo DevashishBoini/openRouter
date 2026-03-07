@@ -16,7 +16,7 @@ public interface ApiKeyRepository extends JpaRepository<ApiKey, UUID> {
     // Spring Data JPA automatically implements basic database CRUD logic methods on ID based, and below methods through methodName parsing
 
     List<ApiKey> findByUserIdAndDeletedFalse(UUID userId);
-    Optional<ApiKey> findByIdAndUserId(UUID id, UUID userId);
+    Optional<ApiKey> findByIdAndUserIdAndDeletedFalse(UUID id, UUID userId);
 
 
 

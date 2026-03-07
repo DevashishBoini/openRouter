@@ -51,7 +51,7 @@ public class ApiKeyService {
     private ApiKey getUserApiKey(UUID userId, UUID apiKeyId) {
 
         return apiKeyRepository
-                .findByIdAndUserId(apiKeyId, userId)
+                .findByIdAndUserIdAndDeletedFalse(apiKeyId, userId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("API key not found")
                 );

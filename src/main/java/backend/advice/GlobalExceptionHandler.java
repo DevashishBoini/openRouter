@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.util.HashMap;
@@ -97,6 +98,33 @@ public class GlobalExceptionHandler {
                 false,
                 "Validation failed",
                 errors
+        );
+    }
+
+
+    /**
+     * Invalid path parameter type (e.g., invalid UUID format)
+     */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+
+        String parameterName = ex.getName();
+        String invalidValue = ex.getValue() != null ? ex.getValue().toString() : "null";
+        String expectedType = ex.getRequiredType() != null ? ex.getRequiredType().getSimpleName() : "unknown";
+
+        logger.warn("Type mismatch error: parameter='{}', value='{}', expectedType='{}'",
+                parameterName, invalidValue, expectedType);
+
+        String message = String.format(
+                "Invalid value '%s' for parameter '%s'. Expected a valid %s format.",
+                invalidValue, parameterName, expectedType
+        );
+
+        return new ErrorResponse(
+                false,
+                message,
+                null
         );
     }
 

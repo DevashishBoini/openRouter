@@ -26,14 +26,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     /**
-     * Skip JWT validation for public auth routes
+     * Skip JWT validation for public routes (auth and model endpoints)
      */
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
 
         String path = request.getServletPath();
 
-        return path.startsWith("/v1/auth/");
+        return path.startsWith("/v1/auth/") ||
+               path.equals("/api/v1/models") ||
+               path.equals("/api/v1/providers") ||
+               path.matches("/api/v1/models/[^/]+/providers");
     }
 
     @Override
