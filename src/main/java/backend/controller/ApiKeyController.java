@@ -91,7 +91,7 @@ public class ApiKeyController {
 
     @PatchMapping("/delete/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @SuccessMessage("API key disabled status updated successfully")
+    @SuccessMessage("API key deleted successfully")
     public void deleteApiKey(
             @CurrentUser UserPrincipal user,
             @PathVariable UUID id
