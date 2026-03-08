@@ -1,4 +1,4 @@
-package backend.dbModel;
+package gateway.dbModel;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -6,7 +6,6 @@ import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 
@@ -19,8 +18,6 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 public class Conversation {
-
-    // Attributes
 
     @Id
     @GeneratedValue
@@ -50,9 +47,6 @@ public class Conversation {
 
     @Column
     private Integer responseTimeMs;
-
-
-    // Foreign Keys and Relationships
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
