@@ -311,7 +311,7 @@ export default function AnalyticsPage() {
                     <div className="flex items-center gap-2">
                       <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full"
+                          className="h-full bg-gradient-to-r from-orange-500 to-orange-600 rounded-full"
                           style={{ width: `${item.percentage}%` }}
                         />
                       </div>

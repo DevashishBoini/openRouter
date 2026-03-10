@@ -36,6 +36,7 @@ public class ChatCompletionService {
     private final CreditService creditService;
     private final CompanyAdapterFactory companyAdapterFactory;
     private final ConversationService conversationService;
+    private final RateLimitService rateLimitService;
 
     /**
      * Process a chat completion request from start to finish.
@@ -56,28 +57,31 @@ public class ChatCompletionService {
         log.info("Processing chat completion: userId={}, apiKeyId={}, model={}",
                 user.getId(), apiKey.getId(), request.model());
 
-        // Step 1: Parse and validate model slug
+        // Step 1: Check rate limit
+        rateLimitService.checkRateLimit(apiKey.getId());
+
+        // Step 2: Parse and validate model slug
         ModelSlug slug = parseModelSlug(request.model());
 
-        // Step 2: Find model and provider mapping in database
+        // Step 3: Find model and provider mapping in database
         ModelProviderMapping mapping = findModelMapping(request.model());
 
-        // Step 3: Get company name from model
+        // Step 4: Get company name from model
         String companyName = extractCompanyName(mapping);
 
-        // Step 4: Estimate cost and check if user has sufficient credits
+        // Step 5: Estimate cost and check if user has sufficient credits
         checkCreditsAvailability(request, user, mapping);
 
-        // Step 5: Route to appropriate company adapter and call LLM provider
+        // Step 6: Route to appropriate company adapter and call LLM provider
         ChatCompletionResponse response = callLLMProvider(request, companyName, slug);
 
-        // Step 6: Calculate actual cost and deduct from user credits
+        // Step 7: Calculate actual cost and deduct from user credits
         double actualCost = deductCreditsForCompletion(response, user, apiKey, mapping);
 
-        // Step 7: Calculate response time
+        // Step 8: Calculate response time
         int responseTimeMs = calculateResponseTime(startTime);
 
-        // Step 8: Save conversation history
+        // Step 9: Save conversation history
         saveConversationHistory(request, response, user, apiKey, mapping, actualCost, responseTimeMs);
 
         log.info("Chat completion successful: userId={}, model={}, company={}, tokens={}/{}, cost={}, time={}ms",

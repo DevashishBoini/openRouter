@@ -5,6 +5,7 @@ import gateway.exception.InsufficientCreditsException;
 import gateway.exception.InvalidApiKeyException;
 import gateway.exception.ModelNotFoundException;
 import gateway.exception.ProviderException;
+import gateway.exception.RateLimitExceededException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -54,6 +55,26 @@ public class GlobalExceptionHandler {
                 false,
                 ex.getMessage(),
                 null
+        );
+    }
+
+    /**
+     * Rate limit exceeded
+     */
+    @ExceptionHandler(RateLimitExceededException.class)
+    @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
+    public ErrorResponse handleRateLimitExceeded(RateLimitExceededException ex) {
+
+        log.warn("Rate limit exceeded: {}", ex.getMessage());
+
+        Map<String, Object> metadata = new HashMap<>();
+        metadata.put("limit", ex.getLimit());
+        metadata.put("retryAfterSeconds", ex.getRetryAfterSeconds());
+
+        return new ErrorResponse(
+                false,
+                ex.getMessage(),
+                metadata
         );
     }
 
