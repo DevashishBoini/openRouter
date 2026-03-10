@@ -13,6 +13,7 @@ import {
   Key,
   Loader2,
   ArrowRight,
+  BarChart3,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -78,7 +79,7 @@ export default function DashboardPage() {
         </Button>
       </div>
 
-      <div className="grid gap-5 sm:grid-cols-2">
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         <Card className="hover:shadow-md hover:-translate-y-px hover:border-neutral-300 transition-all">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
@@ -108,6 +109,22 @@ export default function DashboardPage() {
               className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               Manage keys <ArrowRight className="h-3 w-3" />
+            </Link>
+          </CardContent>
+        </Card>
+
+        <Card className="hover:shadow-md hover:-translate-y-px hover:border-neutral-300 transition-all">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-medium text-muted-foreground">Usage Analytics</p>
+              <BarChart3 className="h-5 w-5 text-muted-foreground/40" />
+            </div>
+            <p className="mt-2 text-3xl font-bold">Track</p>
+            <Link
+              href="/dashboard/analytics"
+              className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              View analytics <ArrowRight className="h-3 w-3" />
             </Link>
           </CardContent>
         </Card>

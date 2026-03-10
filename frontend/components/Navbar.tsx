@@ -55,6 +55,7 @@ function AuthenticatedNav() {
 
   const navItems = [
     { href: "/dashboard", label: "Overview" },
+    { href: "/dashboard/analytics", label: "Analytics" },
     { href: "/dashboard/api-keys", label: "API Keys" },
     { href: "/models", label: "Models" },
     { href: "/providers", label: "Providers" },
@@ -161,7 +162,7 @@ export function Navbar() {
   const { isAuthenticated, isLoading } = useAuth();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-card">
+    <header className="sticky top-0 z-50 w-full border-b bg-card/80 backdrop-blur-md">
       <div className="w-full max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
         {isLoading ? (
           <Link href="/" className="flex items-center gap-2.5 shrink-0">

@@ -85,3 +85,39 @@ export interface OnRampResponse {
   amount: number;
   newBalance: number;
 }
+
+// Analytics Types
+export interface UsageSummary {
+  totalRequests: number;
+  totalTokens: number;
+  totalCost: number;
+  avgLatency: number;
+  successRate: number;
+}
+
+export interface TimelineDataPoint {
+  date: string;
+  requestCount: number;
+  totalCost: number;
+  totalTokens: number;
+}
+
+export interface BreakdownItem {
+  name: string;
+  requestCount: number;
+  totalCost: number;
+  percentage: number;
+}
+
+export interface CostBreakdown {
+  byProvider: BreakdownItem[];
+  byModel: BreakdownItem[];
+}
+
+export interface ApiKeyStats {
+  apiKeyId: string;
+  apiKeyName: string;
+  requestCount: number;
+  totalCost: number;
+  lastUsed: string | null;
+}

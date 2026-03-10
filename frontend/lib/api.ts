@@ -13,6 +13,10 @@ import {
   ModelProvider,
   OnRampResponse,
   User,
+  UsageSummary,
+  TimelineDataPoint,
+  CostBreakdown,
+  ApiKeyStats,
 } from "@/types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
@@ -132,6 +136,49 @@ export const paymentsApi = {
     fetchApi<OnRampResponse>("/api/v1/payments/onramp", {
       method: "POST",
     }),
+};
+
+// Analytics API
+export const analyticsApi = {
+  getSummary: (params?: { period?: string; startDate?: string; endDate?: string }) => {
+    const searchParams = new URLSearchParams();
+    if (params?.period) searchParams.append("period", params.period);
+    if (params?.startDate) searchParams.append("startDate", params.startDate);
+    if (params?.endDate) searchParams.append("endDate", params.endDate);
+
+    const query = searchParams.toString();
+    return fetchApi<UsageSummary>(`/api/v1/analytics/summary${query ? `?${query}` : ""}`);
+  },
+
+  getTimeline: (params?: { period?: string; startDate?: string; endDate?: string }) => {
+    const searchParams = new URLSearchParams();
+    if (params?.period) searchParams.append("period", params.period);
+    if (params?.startDate) searchParams.append("startDate", params.startDate);
+    if (params?.endDate) searchParams.append("endDate", params.endDate);
+
+    const query = searchParams.toString();
+    return fetchApi<TimelineDataPoint[]>(`/api/v1/analytics/timeline${query ? `?${query}` : ""}`);
+  },
+
+  getBreakdown: (params?: { period?: string; startDate?: string; endDate?: string }) => {
+    const searchParams = new URLSearchParams();
+    if (params?.period) searchParams.append("period", params.period);
+    if (params?.startDate) searchParams.append("startDate", params.startDate);
+    if (params?.endDate) searchParams.append("endDate", params.endDate);
+
+    const query = searchParams.toString();
+    return fetchApi<CostBreakdown>(`/api/v1/analytics/breakdown${query ? `?${query}` : ""}`);
+  },
+
+  getApiKeyStats: (params?: { period?: string; startDate?: string; endDate?: string }) => {
+    const searchParams = new URLSearchParams();
+    if (params?.period) searchParams.append("period", params.period);
+    if (params?.startDate) searchParams.append("startDate", params.startDate);
+    if (params?.endDate) searchParams.append("endDate", params.endDate);
+
+    const query = searchParams.toString();
+    return fetchApi<ApiKeyStats[]>(`/api/v1/analytics/api-keys${query ? `?${query}` : ""}`);
+  },
 };
 
 export { ApiError };
